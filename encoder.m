@@ -15,8 +15,8 @@ port = 'COM3';      % Arduino Port
 chA = 'D2';         % digital pin2
 chB = 'D3';         % digital pin3
 ppr = 600;          % Pulses per revolution, uses the 600BM Model
-sum = 0;            % Summation buffer for the pulse count
 edgeCount = 2400;
+overflow = intmax('int32')-1000;
 
 % Init arduino object, MATLAB R2018b is recommended over R2018a due to
 % third party software compatibility issues. Install the rotaryEncoder
@@ -41,6 +41,9 @@ readEncoder = true;
 while readEncoder
   rpm = readSpeed(rEncoder);       % How to verify correct speed??
   [count,time] = readCount(rEncoder,'reset',false);
+  if count > overflow
+    [count,time] = readCount(rEncoder,'reset',true);
+  end
   % Debugging info
   % fprintf('S: %6.2f, Rad/S: %6.2f, Deg: %6.2f.\n', time, toRadS(rpm), toDeg(count, edgeCount));
 end
