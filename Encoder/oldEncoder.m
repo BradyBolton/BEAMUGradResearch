@@ -10,9 +10,11 @@ port = 'COM3';      % Arduino Port
 chA = 'D2';         % digital pin2
 chB = 'D3';         % digital pin3
 ppr = 600;          % Pulses per revolution, uses the 600BM Model
+global edgeCount;
 edgeCount = 2400;
 
 a = arduino(port,model,'Libraries','rotaryEncoder');
+global rEncoder;
 rEncoder = rotaryEncoder(a,chA,chB,ppr);
 
 fprintf('Arduino and Encoder object intitialized.\n');
@@ -20,9 +22,10 @@ fprintf('Arduino and Encoder object intitialized.\n');
 readEncoder = true;
 
 while readEncoder
-  rpm = readSpeed(rEncoder);       % How to verify correct speed??
-  [count,time] = readCount(rEncoder,'reset',false);
-  fprintf('S: %6.2f, Rad/S: %6.2f, Deg: %6.2f.\n', time, toRadS(rpm), toDeg(count, edgeCount));
+  %rpm = readSpeed(rEncoder);       % How to verify correct speed??
+  %[count,time] = readCount(rEncoder,'reset',false);
+  [pos, vel] = getRotaryState();
+  fprintf('Pos: %6.2f, Rad/S: %6.2f.\n', pos, vel);
 end
 
 function rs = toRadS(rpm)
