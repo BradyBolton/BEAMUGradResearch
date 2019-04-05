@@ -19,11 +19,15 @@ chB = 'D3';         % digital pin3
 ppr = 600;          % Pulses per revolution, uses the 600BM Model
 edgeCount = 2400;
 try
-    a = arduino(port,model,'Libraries','rotaryEncoder');
+    %a = arduino('HC-05',model);
+    a = arduino(port,model,'rotaryEncoder');
+    %a = arduino('COM3','Uno','Libraries','rotaryEncoder');
+    fprintf("got here\n");
     rEncoder = rotaryEncoder(a,chA,chB,ppr);
     result = 1;  % Indicate successful initialization
 catch
     warning('Problem using function.  Assigning a value of 0.');
     result = 0;  % Indicate unsucccessful initialization
 end
+
 

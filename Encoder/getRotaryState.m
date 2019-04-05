@@ -4,7 +4,8 @@ function [pos,vel] = getRotaryState()
 global rEncoder;
 global edgeCount;
 rpm = readSpeed(rEncoder);       % How to verify correct speed??
-[count,time] = readCount(rEncoder,'reset',false);
+[count,time] = readCount(rEncoder);%,'reset',false);
+%fprintf("%d\n", count);
 pos = toDeg(count, edgeCount);
 vel = toRadS(rpm);
 end
