@@ -26,11 +26,11 @@
 //   Digital Pin 10 --> Bluetooth TX (Blue)
 //   Digital Pin 11 --> Bluetooth RX (Green)
 SoftwareSerial mySerial(10, 11);  // RX, TX
-volatile long enc_count = 0;      // Global for ISR
+volatile long long enc_count = 0; // Global for ISR
 
 void setup() {
   mySerial.begin(BLUETOOTH_SPEED);
-  // Serial.begin(115200);        // Debugging on Serial Monitor via USB
+  Serial.begin(115200);        // Debugging on Serial Monitor via USB
 
   pinMode(A_PIN, INPUT_PULLUP);
   pinMode(B_PIN, INPUT_PULLUP);
@@ -40,9 +40,12 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(B_PIN), encoder_isr, CHANGE);
 }
 
+// Up to 2^64-1/2400 = 3.8430717e+15 number of rotations before over-flow, use long long
+// to locally track enc_count to avoid rounding errors.
 void loop() {
     delay(1000/READINGS_PER_SECOND);
-    mySerial.println((int)(enc_count/2400.0*360.0));  // long -> double -> int, change this!
+    double degree  = ((enc_count % 2400)/2400.0) * 360.0;
+    mySerial.println(degree);
 }
 
 void encoder_isr() {

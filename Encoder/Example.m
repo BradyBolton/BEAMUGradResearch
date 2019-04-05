@@ -14,6 +14,7 @@ global rEncoder;    % Encoder object
 %fprintf('I think we connected..\n');
 %a = arduino;
 %a = arduino('COM3','Uno');
+% rEncoder = rotaryEncoder(a,chA,chB,ppr);
 %rEncoder = rotaryEncoder(a,chA,chB,ppr);
 
 while true

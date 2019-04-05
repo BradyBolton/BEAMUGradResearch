@@ -1,8 +1,7 @@
 clear all;
-clearSerials;   % Run program at least twice if BT issues
+clearSerials;
 
-
-MODULE_NAME = 'Encoder'; % This should reflect name in RemoteNames call
+MODULE_NAME 'Encoder' % This should reflect name in RemoteNames call
 
 % Survey and open proper bluetooth module
 btInfoAll = instrhwinfo('Bluetooth');
@@ -16,6 +15,6 @@ fprintf(['Successfully opened BT module. Verify that the HC-05 is ',...
 
 while(true)
     % Blocking methods do not interfere with timing of actual data.
-    A = fscanf(btModule, '%f');      % Use fscanf() over fread() if the
-    fprintf('Recieved %f\n', A);     % overhead is not an issue.
+    A = fscanf(btModule, '%lu');      % Use fscanf() over fread() if the
+    fprintf('Recieved %lu\n', A);     % overhead is not an issue.
 end
