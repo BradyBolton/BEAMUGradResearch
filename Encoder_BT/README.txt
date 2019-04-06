@@ -1,0 +1,51 @@
+Setup Instructions:
+1.  Note the specific model of your HC-05 BT module, certain models require
+    a different process to get into AT-programming mode for configuration. For
+    more information, read documentation in BT_configuration. This step may be
+    optional.
+2.  Also note that you have the right encoder. This expects a quadrature encoder
+    with 600 pulses per revolution. Make sure the resolution is sufficient for
+    the expected velocities (Resolution is 360 / 4 * PPR -th of a degree). Avoid
+    detents for continuous applications (incremental encoders). Update parameters
+    in both encoderBTArduino.ino and encoderBT.m at the top.
+3.  Different Arduino boards can handle a certain number of encoders. This is
+    half the maximum number of pins assignable to an interrupt function. E.g. an
+    Arduino UNO only has pins D2 and D3 usable for interrupts, and so only has
+    up to 1 encoder to read from (though you can assign only 1 interrupt to just
+    the A-channel of the encoder to accommodate 2 encoders, but the resolution
+    will be halved). Due to this restriction, the code assumes:
+        i.  The A-channel is attached to the D2 pin
+        ii. The B-channel is attached to the D3 pin
+    Otherwise you will probably receive random garbage data.
+4.  Assemble the Arduino/BT, connect the board via USB, and upload:
+    > encoderBTArduino.ino
+5.  Run encoderBT.m in MATLAB. It will take a minute to pair with the module.
+    Read more about the Bluetooth MATLAB interface here:
+    https://www.mathworks.com/help/instrument/bluetooth-communication.html
+6.  Use the Arduino reset button to reset the current encoder position to 0
+
+====================================================================================
+Trouble-shooting:
+-   A few things could go wrong with the module, a few suggestions that are listed
+    below commonly cause issues:
+    1.  You forgot to include a voltage divider in wiring the module to Arduino. The
+        on-board logic may be fried from to much power (e.g. 5V, rather than 3.3V)
+    2.  The encoder and BT module should be in a closed power loop with the Arduino
+    3.  The encoder may not be getting enough power
+    4.  Ensure that the Arduino communicates at the right baud-rate for MATLAB,
+        typically at 115200 baud
+    5.  Check the BT module's configuration, default baud rate may be too low since
+        some vendors leave their products at 9600 baud, while others at 38400 baud
+    6.  The pins you're using might not be suited for interrupts, or you're using
+        the wrong pins, encoderBTArduino.ino is hard-coded for D2, D3 for A/B signal
+        respectively
+
+====================================================================================
+See Example.m for a demonstration. If using a different encoder you will want to
+change the configuration in encoderBTArduino.ino and encoderBT.m, note following:
+
+1. PPR (pulses per revolution): for the interrupt function
+   - The interrupt will be triggered 4 * PPR times per revolution, since 2 channels
+   A/B are staggered w/ their own interrupt, from LOW/HIGH states (2 * 2 * PPR)
+2. chA: Digital port for the A-channel of the quadrature, usually D2
+3. chB: Digital port for the B-channel of the quadrature, usually D3
