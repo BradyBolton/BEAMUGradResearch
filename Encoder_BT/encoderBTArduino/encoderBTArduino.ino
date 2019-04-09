@@ -1,3 +1,10 @@
+#define PPR 600
+#define BLUETOOTH_SPEED 115200    // Baud assumed by MATLAB 
+#define A_PIN 2                   // Green, Digital Pin #
+#define B_PIN 3                   // White, Digital Pin #
+#define READINGS_PER_SECOND 10
+#define TOTAL_PULSES_PER_ROTATION 4*PPR
+
 /*
   The possible baudrates are (AT commands to modify baud-rate, see BT_Configuration.ino):
     AT+UART=1200,0,0 -------1200
@@ -17,16 +24,12 @@
 #include <SoftwareSerial.h> // Prefer soft-serial over actual Tx-Rx
                             // to prevent possible conflicts
 
-#define BLUETOOTH_SPEED 115200    // Baud assumed by MATLAB 
-#define A_PIN 2                   // Green, Digital Pin #
-#define B_PIN 3                   // White, Digital Pin #
-#define READINGS_PER_SECOND 10
-
 //   Swap RX/TX connections on bluetooth chip
 //   Digital Pin 10 --> Bluetooth TX (Blue)
 //   Digital Pin 11 --> Bluetooth RX (Green)
 SoftwareSerial mySerial(10, 11);  // RX, TX
 volatile long long enc_count = 0; // Global for ISR
+volatile double enc_count_period = 0;// Track # counts in a reading period, estimate velocity
 
 void setup() {
   mySerial.begin(BLUETOOTH_SPEED);
@@ -40,12 +43,20 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(B_PIN), encoder_isr, CHANGE);
 }
 
-// Up to 2^64-1/2400 = 3.8430717e+15 number of rotations before over-flow, use long long
-// to locally track enc_count to avoid rounding errors.
+/* Up to 2^64-1/2400 = 3.8430717e+15 number of rotations before over-flow, use long long
+ * to locally track enc_count to avoid rounding errors. Opposed to using millis() between 
+ * interrupts, count # of interruptions during a uniform reading period (outer-loop)
+ */
 void loop() {
+    
     delay(1000/READINGS_PER_SECOND);
-    double degree  = ((enc_count % 2400)/2400.0) * 360.0;
-    mySerial.println(degree);
+    
+    double deg_from_zero = ((enc_count % (4*PPR))/(4.0*PPR)) * 360.0;
+    double degrees = deg_from_zero < 0 ? 360 + deg_from_zero : deg_from_zero;
+    double result = enc_count_period * 1000;
+    result += enc_count_period < 0 ? -1*degrees : degrees; 
+    mySerial.println(result);       // Package pos/vel info together
+    enc_count_period = 0.0;
 }
 
 void encoder_isr() {
@@ -55,6 +66,7 @@ void encoder_isr() {
     
     enc_val = enc_val << 2;           // Shift previous 2-bit encoder state to create the next lookup
     enc_val = enc_val | ((PIND & 0b1100) >> 2);  // Bit-mask PIND (port HI/LOW rep. as binary) to update enc_val
- 
-    enc_count = enc_count + lookup_table[enc_val & 0b1111]; // Bit-mask to read right values, use look-up table
+
+    enc_count += lookup_table[enc_val & 0b1111]; 
+    enc_count_period += lookup_table[enc_val & 0b1111];
 }

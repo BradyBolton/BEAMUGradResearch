@@ -1,21 +1,14 @@
-clear all;
-clearSerials;   % Run program at least twice if BT issues
-
-
-MODULE_NAME = 'Encoder'; % This should reflect name in RemoteNames call
-
-% Survey and open proper bluetooth module
-btInfoAll = instrhwinfo('Bluetooth');
-btInfoAll.RemoteNames;                 % Check module name (e.g. 'HC-05')
-btInfoModule = instrhwinfo('Bluetooth', MODULE_NAME);
-btInfoModule;
-btModule = Bluetooth(MODULE_NAME, 1);  % Assume 115200 baud by MATLAB
-fopen(btModule);
-fprintf(['Successfully opened BT module. Verify that the HC-05 is ',...
-    'blinking slowly within 2 second intervals.\n']);
-
+%{ 
+Initiate the BT/encoder by specifying the following attributes: 
+    1. The name of the BT module (Check 'Bluetooth & other devices')
+    2. The PPR (pulses per revolution, e.g. 600 pulses a revolution)
+    3. The number of samples per second (e.g. a sample every 100 ms)
+%}
+initEncoder('Encoder', 600, 10);
 while(true)
-    % Blocking methods do not interfere with timing of actual data.
-    A = fscanf(btModule, '%f');      % Use fscanf() over fread() if the
-    fprintf('Recieved %f\n', A);     % overhead is not an issue.
+    % Get position (deg) and velocity (rad/s) from most recent reading:
+    % Note: to set the current orientation to 0-degrees, press the reset
+    %       button on the Arduino itself.
+    [pos, vel] = getRotaryState();
+    fprintf('Pos: %f, Vel: %f\n', pos, vel);     
 end

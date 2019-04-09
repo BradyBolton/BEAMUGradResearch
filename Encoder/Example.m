@@ -1,5 +1,6 @@
 % Example on using the rotary encoder, if using different model refer to
 % initRot.m documentation.
+clear all;
 model = 'Uno';      % Update depending on the board
 port = 'COM3';      % Arduino Port
 chA = 'D2';         % digital pin2
@@ -13,8 +14,9 @@ global rEncoder;    % Encoder object
 %a = arduino('btspp://0018E4400006',model);
 %fprintf('I think we connected..\n');
 %a = arduino;
-%a = arduino('COM3','Uno');
-% rEncoder = rotaryEncoder(a,chA,chB,ppr);
+edgeCount = 2400;
+a = arduino('COM3','Uno','Libraries','rotaryEncoder');%,'rotaryEncoder');
+rEncoder = rotaryEncoder(a,chA,chB,ppr);
 %rEncoder = rotaryEncoder(a,chA,chB,ppr);
 
 while true
