@@ -14,12 +14,15 @@ function result = initEncoder(module_name, p, readings_per_second)
         disp(btInfoAll.RemoteNames);     % Check module name (e.g. 'HC-05')
         btInfoModule = instrhwinfo('Bluetooth', module_name);
         disp(btInfoModule);
+        fprintf('Before the creation of BT object');
         btModule = Bluetooth(module_name, 1);% Assume 115200 baud by MATLAB
+        fprintf('After the creation of BT object');
         fopen(btModule);
         
         fprintf(['Successfully opened BT module. Verify that the HC-05 is ',...
             'blinking slowly within 2 second intervals.\n']);
         result = 1;  % Indicate successful initialization
+        
     catch
         warning('Problem initiating encoder.  Assigning a value of 0.');
         result = 0;  % Indicate unsucccessful initialization

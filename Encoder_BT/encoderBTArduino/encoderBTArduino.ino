@@ -34,6 +34,7 @@ volatile double enc_count_period = 0;// Track # counts in a reading period, esti
 void setup() {
   mySerial.begin(BLUETOOTH_SPEED);
   Serial.begin(115200);        // Debugging on Serial Monitor via USB
+  enc_count = 0;               // Reset static information
 
   pinMode(A_PIN, INPUT_PULLUP);
   pinMode(B_PIN, INPUT_PULLUP);
@@ -49,24 +50,40 @@ void setup() {
  */
 void loop() {
     
-    delay(1000/READINGS_PER_SECOND);
+  delay(1000/READINGS_PER_SECOND);
     
-    double deg_from_zero = ((enc_count % (4*PPR))/(4.0*PPR)) * 360.0;
-    double degrees = deg_from_zero < 0 ? 360 + deg_from_zero : deg_from_zero;
-    double result = enc_count_period * 1000;
-    result += enc_count_period < 0 ? -1*degrees : degrees; 
-    mySerial.println(result);       // Package pos/vel info together
-    enc_count_period = 0.0;
+  double deg_from_zero = ((enc_count % (4*PPR))/(4.0*PPR)) * 360.0;
+  double degrees = deg_from_zero < 0 ? 360 + deg_from_zero : deg_from_zero;
+  double result = enc_count_period * 1000;
+  result += enc_count_period < 0 ? -1*degrees : degrees; 
+  mySerial.println(result);       // Package pos/vel info together
+  enc_count_period = 0.0;
 }
 
 void encoder_isr() {
-    // Note: Assign A-Dig1, B-Dig2 ports only, since bit-shifts and lookup table are port specific!
-    static int8_t lookup_table[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0};
-    static uint8_t enc_val = 0;       // Initiate once, updated each ISR call
-    
-    enc_val = enc_val << 2;           // Shift previous 2-bit encoder state to create the next lookup
-    enc_val = enc_val | ((PIND & 0b1100) >> 2);  // Bit-mask PIND (port HI/LOW rep. as binary) to update enc_val
+  // Note: Assign A-Dig1, B-Dig2 ports only, since bit-shifts and lookup table are port specific!
+  static int8_t lookup_table[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0};
+  static uint8_t enc_val = 0;       // Initiate once, updated each ISR call
+  
+  enc_val = enc_val << 2;           // Shift previous 2-bit encoder state to create the next lookup
+  enc_val = enc_val | ((PIND & 0b1100) >> 2);  // Bit-mask PIND (port HI/LOW rep. as binary) to update enc_val
 
-    enc_count += lookup_table[enc_val & 0b1111]; 
-    enc_count_period += lookup_table[enc_val & 0b1111];
+  enc_count += lookup_table[enc_val & 0b1111]; 
+  enc_count_period += lookup_table[enc_val & 0b1111];
 }
+
+//void reinitializeEncoder(){
+//  boolean isInitialized = false;
+//  while(!isInitialized){
+//    // Keep reading from HC-05
+//    if (BTSerial.available()){
+//      char c = BTSerial.read();
+//      enc_count = c == 0x01 ? 0 : enc_count;
+//    } 
+//    isInitialized = true;
+//  }
+//  // Indicate to MATLAB that the position has been set
+//  if (isInitialized){
+//    BTSerial.write(0x02);
+//  }
+//}

@@ -1,6 +1,6 @@
 % Close/clear previously existing bluetooth modules to prevent interference
 clc;
-% clear all
+clear all
 
 if ~isempty(instrfind)
     fclose(instrfind);
