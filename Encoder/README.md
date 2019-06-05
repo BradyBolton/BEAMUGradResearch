@@ -1,5 +1,5 @@
 # Setup
-===
+---
 * It is recommended to use `MATLAB 2018b` since `MATLAB 2018a` has some issues with downloading the proper encoder library (downloading 3rd-party software)
 * Install the Encoder library by: `Home` > `Add-Ons` > Search for:
 `MATLAB Support Package for Arduino Hardware`
