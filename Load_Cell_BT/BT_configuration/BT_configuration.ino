@@ -34,7 +34,7 @@
 //    #define NEW_BAUD "AT+UART=1382400,0,0\r\n" //----1382400
 
 
-#define NEW_NAME "Encoder"  // If this is changed, update the MATLAB script
+#define NEW_NAME "HC-05"  // If this is changed, update the MATLAB script
 
 // If you haven't configured your device before use this
 #define BLUETOOTH_SPEED 38400   // This is the default baudrate that HC-05 uses, you'll have to
@@ -82,6 +82,10 @@ void setup() {
   String rnc = String("AT+NAME=") + String(NEW_NAME) + String("\r\n"); 
   mySerial.print(rnc);
   waitForResponse();
+
+//  String settings = String("AT+UART?") + String("\r\n"); 
+//  mySerial.print(settings);
+//  waitForResponse();
 
   // Set baudrate to some new baud-rate.
   mySerial.print("AT+UART=115200,0,0\r\n");
