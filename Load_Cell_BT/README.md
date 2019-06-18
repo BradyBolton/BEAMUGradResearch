@@ -1,6 +1,6 @@
 # Encoder and Load-cell Bluetooth Arduino Setup
 
-This folder contains necessary code to use 1 encoder and 2 load-cells, sending data via a single bluetooth HC-05 module to MATLAB at a specified rate of samples per second (default at 10). Note the following folders:
+This folder contains code to use 1 encoder and 2 load-cells, sending data via a single bluetooth HC-05 module to MATLAB at a specified rate of samples per second (default at 10). Note the following folders:
 
 * `BT_configuration`: An Arduino routine to configure the BT module serially via USB (attach the BT module to Arduino, then via the USB A to B cable connect the Arduino to the laptop). Open up the serial command line and communicate to the module from there, using this [reference](https://www.itead.cc/wiki/Serial_Port_Bluetooth_Module_(Master/Slave)_:_HC-05) to do what you'd like
 * `encoder_loadcell`: Upload this routine to the Arduino to read the encoder and load-cells

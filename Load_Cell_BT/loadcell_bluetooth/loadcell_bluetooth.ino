@@ -29,7 +29,7 @@ void setup() {
 */
    
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  scale.set_scale(2000.f);                    // this value is obtained by calibrating the scale with known weights; see the README for details
+  scale.set_scale(11010.f);                    // this value is obtained by calibrating the scale with known weights; see the README for details
   scale.tare();                               // reset the scale to 0
 }
 
