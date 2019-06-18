@@ -21,7 +21,7 @@
  3.  The encoder may not be getting enough power
  4.  Ensure that the Arduino communicates at the right baud-rate for MATLAB, try 115200 baud
  5.  Check the BT module's configuration, default baud rate may be too low since some vendors leave their products at 9600 baud, while others at 38400 baud. The configuration is found by interfacing the HC05 via a direct serial connection while it is in AT-mode with the command `AT+UART?` (an example response is `9600,0,0`). To enter AT-mode hold down onto the button near the pins while the Arduino is powered down, and then let go once the board is powered up (the HC05 should be blinking slowly rather than its usual rapid flashing). Then run `BT_configuration.ino`, open up the serial terminal, and type in AT commands (after the included AT commands finish). See [this resource for AT commands](https://www.teachmemicro.com/hc-05-bluetooth-command-list/) and [this resource for AT-mode programming in general for the HC05](http://www.martyncurrey.com/arduino-with-hc-05-bluetooth-module-at-mode/).
- 6.  The pins you're using might not be suited for interrupts, or you're using the wrong pins, encoderBTArduino.ino is hard-coded for `D2`, `D3` for A/B signal respectively (since those are what most models have assigned this to)
+ 6.  The pins you're using might not be suited for interrupts, or you're using the wrong pins, `encoderBTArduino.ino` is bit-wise hard-coded for `D2`, `D3` for A/B signal respectively (since those are what most models have assigned this to)
  7. The HC05 module might be a ZS-040 model, which requires extra steps to get into AT-mode for programming in order to correctly configure the baud-rate. Follow [this advice](http://www.martyncurrey.com/arduino-with-hc-05-bluetooth-module-at-mode/).
 
 ---
