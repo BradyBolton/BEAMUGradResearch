@@ -9,7 +9,7 @@
  Otherwise you will receive random garbage data.
 4.  Assemble the Arduino/BT, connect the board via USB, then upload:
     > `encoderBTArduino.ino` (editing correct parameters)
-5.  Run `encoderBT.m` in MATLAB. It will take a minute to pair with the module.
+5.  Run `encoderBT_Example.m` in MATLAB. It will take a minute to pair with the module.
     [Read more about the Bluetooth MATLAB interface here.](https://www.mathworks.com/help/instrument/bluetooth-communication.html)
 6.  Notice that the position is zeroed everytime the Arduino is powered up
 
@@ -25,7 +25,7 @@
  7. The HC05 module might be a ZS-040 model, which requires extra steps to get into AT-mode for programming in order to correctly configure the baud-rate. Follow [this advice](http://www.martyncurrey.com/arduino-with-hc-05-bluetooth-module-at-mode/).
 
 ---
-See `encoderBT.m` for a demo. If using a different encoder you will want to
+See `encoderBT_Example.m` for a demo. If using a different encoder you will want to
 change the configuration in encoderBTArduino.ino and the parameters of initEncoder, note the following:
 
 1. `PPR` (pulses per revolution): for the interrupt function
