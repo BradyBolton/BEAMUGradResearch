@@ -1,5 +1,12 @@
 # Hitec D845 Servo-motor Setup
 
+* `MATLAB + Arduino`: Code for a MATLAB interface controlling the servo via serial communication to Arduino
+* `MATLAB Only`: Code for MATLAB to control the servo, using MATLAB's Servo library
+* `ServoCenter`: An Arduino routine to center the horn and find the necessary PWM adjustment for centering
+* `HitecServoHorns_2011`: Physical specifications for compatible servo horns from Hitec
+* `Servo_Manual`: General Hitec servo manual, read this before any experimentation. Missing details unique to specific models will destroy them in some cases, so be careful
+
+
 This folder contains code to run any general purpose servo, centering the horn (use `ServoCenter.ino`) which reports the PWM adjustment for the servo. Otherwise, centering the horn and resetting the endpoints of the servo's sweep range can be done using a commercial servo programmer (models such as the HFP-30 field-programmer provided by Hitec would suffice, but programming modules from other vendors like Futaba are also compatible). This repository does not assume that such a programmer is available for use.
 
 ---

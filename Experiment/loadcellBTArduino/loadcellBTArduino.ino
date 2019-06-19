@@ -30,11 +30,11 @@ void setup() {
    
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   scale.set_scale(11010.f);                    // this value is obtained by calibrating the scale with known weights; see the README for details
-  scale.tare();                               // reset the scale to 0
+  scale.tare();                                // reset the scale to 0
 }
 
 void loop() {
-    Serial.println(scale.get_units(10), 1);     // 10 average readings from (ADC - Tare_Weight)/SCALE, prints float to BT HC05
+    Serial.println(scale.get_units(10), 1);       // 10 average readings from (ADC - Tare_Weight)/SCALE, prints float to BT HC05
     mySerial.println(scale.get_units(10), 1);     // 10 average readings from (ADC - Tare_Weight)/SCALE, prints float to BT HC05
 //  scale.power_down();                           // put the ADC in sleep mode
 //  delay(5000);

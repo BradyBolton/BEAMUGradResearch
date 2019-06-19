@@ -6,11 +6,11 @@
 #include <String.h> // strcat, c_str
 #include <stdlib.h> // atof
 #include <stdio.h>  // sscanf
-#include<Servo.h>
+#include <Servo.h>
 
 Servo hitec;
 int pos;
-long adjustedBase, centerAdjustment, tick, lowerPWM, upperPWM;
+long adjustedBase, currentMS, centerAdjustment, tick, lowerPWM, upperPWM;
 String initInput;
 float travelPerMS;
 
@@ -72,18 +72,20 @@ void setup() {
     hitec.writeMicroseconds(adjustedBase);
     delay(1000);
     free(outMessage);
+    currentMS = adjustedBase;
   }
 }
 
 void loop() {
-//  while (Serial.available() > 0){
-//    pos = Serial.parseInt();
-//    hitec.writeMicroseconds(base + adjustment);
-//    delay(15);
-//    break;
-//  }
+  while (Serial.available() > 0){
+    pos = Serial.parseFloat();
+    hitec.writeMicroseconds(base + adjustment);
+    delay(15);
+    break;
+  }
 }
 
-long posToPWM(int pos){
-  
+long posToPWM(float pos){
+  double absPos = fabs(pos);
+  return (long) absPos/travelPerMS;
 }
