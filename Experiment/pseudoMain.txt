@@ -9,13 +9,13 @@ initEncoder('Encoder', 600, 10);        % Encoder
 initLoadCell('HC-05');                  % Load-cell
 
 stop = 5;
-startServo = 0.25
+startServoTime = 0.25
 
 while time < stop
-    if(time > startServo)
-        startServo(true);                   % Activate motion
+    if(time > startServoTime)
+        startServo();                   % Activate motion
     [pos, vel] = getRotaryState();          % Read encoder
     avgReading = fscanf(btModule, '%f');    % Read Load-cell
 end
 
-startServo(false); % deactivate motion
+stopServo();                            % deactivate motion
