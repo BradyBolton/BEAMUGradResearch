@@ -8,29 +8,25 @@
 #include <stdio.h>  // sscanf
 #include <Servo.h>
 
-union {
+// To parse incoming bytes as float, read the same memory
+union Float {
   byte asBytes[4];
   float asFloat;
-} Float;
+};
 
 Servo hitec;
 int pos;
 long adjustedBase, currentMS, centerAdjustment, tick, lowerPWM, upperPWM;
 String initInput;
 float travelPerMS;
+boolean inMotion = false;
 
+// Parameters for wave-form
 static float T, a1, a2, a3, a4, a5, a6, w;
 
-//% parameters
-//float T, a1, a2, a3, a4, a5, a6, w;
-//T = 0.8; %Time period for one cycle
-//a1 = 0.3; 
-//a2 = 0.3;
-//a3 = 0.05;
-//a4 = 0.2;
-//a5 = 0.04;
-//a6 = 0.03;
-//w = 2*pi/T;
+// Anshul Servo code
+unsigned long start_time, current_time, period_time; 
+float i,per,out,omega,pos_sin,coeff,wave;// omega = angular veocity ; pos_sin = position of motor Range~[-1 1]; out = motor posittion w.r.t centre
 
 // ===========================[ Parameters ]================================
 int baudRate = 9600;     // Baudrate must be the same as MATLAB's parameter
@@ -44,6 +40,12 @@ int MESSAGE_SIZE = 100;
 
 void setup() {
 
+  // Anshul code
+  period_time = 1000;        // T = 1000 ms or 1 Sec ( Time period for one cycle) 
+  omega = 1*PI/period_time;  // w = 2 (angular velocity)
+  start_time = millis();
+  // ----------------------------------------------------------------
+  
   lowerPWM = upperPWM = -1;
 
   hitec.attach(servoPort);
@@ -55,18 +57,19 @@ void setup() {
   }
   tick = millis();
   Serial.println("Serial established.");
-  while(!Serial.available()){
-    // Await centering adjustment
-    if((millis() - tick) > timeout){
-      timeOutFlag = true;
-      break;
-    }
-  }
-  if(timeOutFlag){
+//  while(!Serial.available()){
+//    // Await centering adjustment
+//    if((millis() - tick) > timeout){
+//      timeOutFlag = true;
+//      break;
+//    }
+//  }
+  if(false){
     Serial.println("Arduino timed out, expected input from MATLAB not recieved");
   } else {
     char numIncomingBytes = 0;
     delay(1000);
+    float *parameters = calloc(7, sizeof(float));
     while((numIncomingBytes = Serial.available()) > 0){
       parseSerial(Serial.available());
       break;
@@ -74,22 +77,57 @@ void setup() {
     char *outputMessage = calloc(MESSAGE_SIZE, sizeof(char));
     sprintf(outputMessage, "Recieved: %2d bytes of data.", numIncomingBytes); 
     Serial.println(outputMessage);
+
+//    Serial.println("Verify parameters");
+//    printFloat(T, 100);
+//    printFloat(a1, 100);
+//    printFloat(a2, 100);
+//    printFloat(a3, 100);
+//    printFloat(a4, 100);
+//    printFloat(a5, 100);
+//    printFloat(a6, 100);
+//    printFloat(w, 100);
+//    Serial.println();
+    
   }
 }
 
 void loop() {
+  current_time = millis() - start_time;
+
+  out = 1425 + 300 * desiredTheta(((float)current_time)/1000);
+  
+  hitec.writeMicroseconds(out);
+  delay(20);
+
+  if(millis() >=10000){
+    while(true){
+      ;
+    }
+  }
+  
 }
 
 void parseSerial(int numBytesToRead){
   switch(numBytesToRead){
-    case 4:
-      float* recieved = parseFloatArray(numBytesToRead);
-      if(recieved == NULL){
+    case 28:
+      float* parameters = parseFloatArray(numBytesToRead);
+      if(parameters == NULL){
         Serial.println("Unsuccessful reading, aborting.");
         return;
+      } else {
+        //  Register parameters
+        T = parameters[0]; // Time period for one cycle
+        a1 = parameters[1];
+        a2 = parameters[2];
+        a3 = parameters[3];
+        a4 = parameters[4];
+        a5 = parameters[5];
+        a6 = parameters[6];
+        w = 2*PI/T;
       }
       break;
-    case 0:
+    case 1:
       char com = Serial.read();
       if(com == 'a'){
         activateServo();
@@ -109,16 +147,18 @@ float* parseFloatArray(int numBytesToRead){
     // Return null pointer, indicate unsuccessful parsing
     return NULL;
   } else {
-    long floatBuffer = 0; 
-    byte *byteBuffer = calloc(numBytesToRead, sizeof(char));
-    for(int B = 0; B < 4; B++){
-      Float.asBytes[B] = Serial.read();
+    char numFloatsToParse = numBytesToRead / sizeof(float);
+    union Float *buff = calloc(numFloatsToParse, sizeof(Float));
+    float *parsedArray = calloc(numFloatsToParse, sizeof(float)); 
+    for(int f = 0; f < numFloatsToParse; f++){
+      for(int B = 0; B < 4; B++){
+        buff[f].asBytes[B] = Serial.read();
+      } 
+      parsedArray[f] = buff[f].asFloat;
+      // printFloat(buff[f].asFloat, 1000);
     }
-    printFloat(Float.asFloat, 4);
-    if(Float.asFloat == 3.29){
-      Serial.println("yes");
-    }
-    float* out = &Float.asFloat;
+    free(buff);
+    float* out = parsedArray;
     return out;
   }
 }
@@ -140,22 +180,12 @@ float desiredTheta(float t){
     a6*sin(3*w*t);  
 }
 
-
-//  % parameters
-//T = 0.8; %Time period for one cycle
-//a1 = 0.3; 
-//a2 = 0.3;
-//a3 = 0.05;
-//a4 = 0.2;
-//a5 = 0.04;
-//a6 = 0.03;
-//w = 2*pi/T;
-
 void printFloat( float val, unsigned int precision){
 // prints val with number of decimal places determine by precision
 // NOTE: precision is 1 followed by the number of zeros for the desired number of decimial places
 // example: printDouble( 3.1415, 100); // prints 3.14 (two decimal places)
 
+   Serial.print(" "); // print the decimal point
    Serial.print (int(val));  //prints the int part
    Serial.print("."); // print the decimal point
    unsigned int frac;
@@ -163,5 +193,6 @@ void printFloat( float val, unsigned int precision){
        frac = (val - int(val)) * precision;
    else
        frac = (int(val)- val ) * precision;
-   Serial.println(frac,DEC) ;
+   Serial.print(frac,DEC) ;
+   Serial.print(" "); // print the decimal point
 } 

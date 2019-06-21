@@ -2,12 +2,17 @@
 
 This folder contains code to use 1 encoder and 2 load-cells, sending data via a single bluetooth HC-05 module to MATLAB at a specified rate of samples per second (default at 10). Note the following folders:
 
-* `BT_configuration`: An Arduino routine to configure the BT module serially via USB (attach the BT module to Arduino, then via the USB A to B cable connect the Arduino to the laptop). Open up the serial command line and communicate to the module from there, using this [reference](https://www.itead.cc/wiki/Serial_Port_Bluetooth_Module_(Master/Slave)_:_HC-05) to do what you'd like
-* `encoder_loadcell`: Upload this routine to the Arduino to read the encoder and load-cells
-* `encoderBTArduinoOld`: Ignore this for now
-* `firmware`: This is useful for setups with only one load-cell per Arduino board. This is library is currently unused, instead we will use `HX711-multi` since there are two load-cells
+* `BT_configuration`: An Arduino routine to configure the BT module serially via USB (attach the BT module to Arduino, then via the USB A to B cable connect the Arduino to the laptop). Open up the serial command line and communicate to the module from there, using this [reference](https://www.itead.cc/wiki/Serial_Port_Bluetooth_Module_(Master/Slave)\_:\_HC-05) to do what you'd like
+* `loadcellBTArduino`: Upload this Arduino routine to read the load-cell
+* `firmware`: This is useful for setups with only one load-cell per Arduino board (SparkFun)
+
+Suggested HX711 Libraries:
+
 * `HX711`: Bodge's wonderful library that is unused for reasons stated above. The code is left here for reference
+
 * `HX711-multi`: Minimal re-implementation of Bogde's library for multiple load-cells. This library is used by `encoder_loadcell`
+
+![setup](./setup_1.JPG)
 
 ## Setup Instructions:
 1.  Note the specific model of your HC-05 BT module, certain models require a different process to get into AT-programming mode for configuration. For more information, read documentation in `BT_configuration`. This step may be optional.

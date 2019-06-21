@@ -1,0 +1,4 @@
+# Hitec D845 Servo-motor Setup (Old)
+
+* `MATLAB + Arduino`: Code for a MATLAB interface controlling the servo via serial communication to Arduino
+* `MATLAB Only`: Code for MATLAB to control the servo, using MATLAB's Servo library

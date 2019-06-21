@@ -10,7 +10,7 @@ clc
 close all
 
 %% Parameters: Change this depending on the setup
-COM_PORT =      'COM12';
+COM_PORT =      'COM9';
 MODEL =         'UNO'; 
 SERVO_PORT =    'D9';
 
