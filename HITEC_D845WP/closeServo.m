@@ -1,7 +1,7 @@
 function closeServo()
-    global arduinoSerial;
+    global serialServo;
     % Clean up serial connections
-    fclose(arduinoSerial);
-    delete(arduinoSerial);
-    clear arduinoSerial;
+    fclose(serialServo);
+    delete(serialServo);
+    clear serialServo;
 end

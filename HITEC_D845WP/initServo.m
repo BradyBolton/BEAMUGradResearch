@@ -7,7 +7,7 @@ function initServo(sP, bR, c, mTD)
     BAUD_RATE   = bR;       % See: https://www.mathworks.com/help/matlab/matlab_external/baudrate.html
     centeringOffsetPWM = c; % E.g. 145, PWM offset from 1500 PWM (90 deg) center
     microsToDeg = mTD;      % E.g. 0.101, Microseconds to Degrees (of servo-actuation)
-    global arduinoSerial;
+    global serialServo;
     
     %% Clean up setup
     close;
@@ -22,21 +22,22 @@ function initServo(sP, bR, c, mTD)
     end
 
     %% Setup Serial (configured for Arduino)
-    arduinoSerial = serial(SERIAL_PORT, ...
+    serialServo = serial(SERIAL_PORT, ...
         'BaudRate', BAUD_RATE, ...
         'StopBits', 1, ...
         'Parity', 'none');
         % Assume little-endian by default, s.DataBits = 8
     disp("MATLAB: opening connection, will take 2 seconds.");
-    fopen(arduinoSerial);
+    fopen(serialServo);
     disp("MATLAB: opened serial connection.");
     pause(1);
 
-    getResponse(arduinoSerial, 1); % Initial Arduino response
+    getResponse(serialServo, 1); % Initial Arduino response
 
-    fwrite(arduinoSerial, centeringOffsetPWM, 'int32');
-    fwrite(arduinoSerial, microsToDeg, 'float32');
-    getResponse(arduinoSerial,1); % Verify bytes recieved
+    fwrite(serialServo, centeringOffsetPWM, 'int32');
+    fwrite(serialServo, microsToDeg, 'float32');
+    getResponse(serialServo,1); % Verify bytes recieved
+    disp(serialServo);
 end
 
 function getResponse(serial, numOfResponses)

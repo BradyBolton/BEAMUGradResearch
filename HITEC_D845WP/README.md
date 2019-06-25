@@ -21,7 +21,7 @@ This folder contains code to run any general purpose servo, centering the horn (
  * `serialPort`: Which COM port Arduino is connected to, written as `'COM1'` for COM port 1 (on Windows machines, if on MAC write `/dev/tty.KeySerial1`, or Linux as `/dev/ttyS0`)
  * `baudRate`: This should match the `baudRate` parameter in `Servo_Arduino.ino`, keep this at 9600
  * `centerAdjustment`: Write the adjustment found in step 2
- * `microSecondsToDegrees`: For the Hitec D845-WP the travel (degrees) per microsecond is 0.101° based on [this data-sheet](https://www.servocity.com/d845wp-servo), so a 30° servo sweep rougly correlates to 300 µs PWM written to the servo
+ * `microSecondsToDegrees`: For the Hitec D845-WP the travel (degrees) per microsecond is 0.101° based on [this data-sheet](https://www.servocity.com/d845wp-servo), so a 30° servo sweep roughly correlates to 300 µs PWM written to the servo. I would use ServoCity's website to get more specific information (perhaps Hitec provides more detailed information somewhere, but I've found their own data-sheets to be lacking)
 
  E.g., an Arduino connected via COM port 12 on a 9600 baud serial connection for the Hitec D845-WP is initialized with: `initServo('COM12', 9600, 145, 0.101)`
 
@@ -29,7 +29,7 @@ This folder contains code to run any general purpose servo, centering the horn (
 
  E.g. moving the flapper 30° to the left while reading from the load-cell is called by:
 
- `myLoadCellReading = writeServoDeg(30, 'ls')` 
+ `myLoadCellReading = writeServoDeg(30, 'ls')`
 
  To only move the flapper one could call `writeServoDeg(30, 's')`, and to only read the load-cell one could call:
 
