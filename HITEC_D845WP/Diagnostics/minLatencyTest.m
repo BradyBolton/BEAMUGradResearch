@@ -1,6 +1,6 @@
 global bluetoothLoadCell;
-%clearSerials;
-%initLoadCell;
+clearSerials;
+initLoadCell;
 test = 2; % single byte
 i = 1;
 time = zeros([100, 1]);
@@ -14,7 +14,7 @@ fscanf(bluetoothLoadCell, '%f,%f');
      time(i) = toc;
      i = i + 1;
  end
-disp(mean(time));
+fprintf('Average round-time latency: %fs\n', mean(time));
 xaxis = weight(:,2);
 plot(xaxis,weight);
 

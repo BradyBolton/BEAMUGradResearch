@@ -10,7 +10,7 @@ union ByteBuffer {
 };
 
 // ===========================[ Parameters ]================================
-int baudRate = 9600;     // Baudrate must be the same as MATLAB's parameter
+int baudRate = 14400;     // Baudrate must be the same as MATLAB's parameter
 int servoPort = 9;
 int MESSAGE_MAX_SIZE = 100;
 long basePWM = 1500;     // Usually libraries assume 1500 microsecond PWM = 90 deg
@@ -87,7 +87,7 @@ void processServoPosition(){
     posBuffer.asBytes[b] = Serial.read();
   }
   float posInDegrees = posBuffer.asFloat;
-  long posInPWM = adjustedBase + microsToDeg * posInDegrees;  // Might need a revision
+  long posInPWM = adjustedBase + posInDegrees/microsToDeg;  // Might need a revision
   hitec.writeMicroseconds(posInPWM);
   delay(20);
 }
