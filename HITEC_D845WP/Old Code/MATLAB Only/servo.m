@@ -10,8 +10,8 @@ clc
 close all
 
 %% Parameters: Change this depending on the setup
-COM_PORT =      'COM9';
-MODEL =         'UNO'; 
+COM_PORT =      'COM8';
+MODEL =         'Mega2560'; 
 SERVO_PORT =    'D9';
 
 %Servo PWM : Range for HS-5646 servo (553 - 2520) microseconds or 146.25
@@ -55,7 +55,7 @@ while t <= stop
     
     %Read the exact position as a feedback from servo:
     pos = readPosition(s);
-    Theta_compare(count,3) = pos;
+    Theta_compare(count,3) = pos*180;
     %Plot the input waveform :
 %     plot(t,out,'ro')
 %     plot(t,pos,'b*')
@@ -66,7 +66,7 @@ end
 
 % Plot input waveform after the trial
 Theta_compare = Theta_compare(1:count,:);
-plot(Theta_compare(:,1),Theta_compare(:,2))
+plot(Theta_compare(:,1),Theta_compare(:,3))
 
 %Reset to mid position:
 pause(0.2);

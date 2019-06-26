@@ -29,7 +29,6 @@ void loop() {
     }
     mySerial.print(scale.get_units(1));
     mySerial.print(",");
-    mySerial.print((millis())/1000.0);
-    mySerial.println();
+    mySerial.println((millis())/1000.0);
   }
 }

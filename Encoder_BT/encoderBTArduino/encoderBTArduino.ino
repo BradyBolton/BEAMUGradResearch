@@ -3,7 +3,7 @@
 #define A_PIN 2                   // Green, Digital Pin #
 #define B_PIN 3                   // White, Digital Pin #
 #define READINGS_PER_SECOND 10
-#define TOTAL_PULSES_PER_ROTATION 4*PPR
+#define TOTAL_PULSES_PER_ROTATION 2400
 
 /*
   The possible baudrates are (AT commands to modify baud-rate, see BT_Configuration.ino):
@@ -50,14 +50,23 @@ void setup() {
  */
 void loop() {
     
-  delay(1000/READINGS_PER_SECOND);
-    
-  double deg_from_zero = ((enc_count % (4*PPR))/(4.0*PPR)) * 360.0;
-  double degrees = deg_from_zero < 0 ? 360 + deg_from_zero : deg_from_zero;
-  double result = enc_count_period * 1000;
-  result += enc_count_period < 0 ? -1*degrees : degrees; 
-  mySerial.println(result);       // Package pos/vel info together
-  enc_count_period = 0.0;
+  if(mySerial.available()){
+    while(mySerial.available()){
+      mySerial.read();  
+    }
+    mySerial.print((long)(enc_count % TOTAL_PULSES_PER_ROTATION)); 
+    mySerial.print(",");
+    mySerial.print(enc_count_period);
+    mySerial.print(",");
+    mySerial.println(millis()/1000.0);
+    enc_count_period = 0.0; 
+  }
+//  Serial.print((long)(enc_count % TOTAL_PULSES_PER_ROTATION)); 
+//  Serial.print(",");
+//  Serial.print(enc_count_period);
+//  Serial.print(",");
+//  Serial.println(millis()/1000.0);
+//  enc_count_period = 0.0; 
 }
 
 void encoder_isr() {

@@ -35,6 +35,6 @@ This folder contains code to run any general purpose servo, centering the horn (
 
  `myLoadCellReading = writeServoDeg(30, 'l')` (which ignores the given `angle`)
 
- The return variable `myLoadCellReading` is actually a 1x2 array: `[timestamp_of_reading, actual_reading]`. See the given example code in `servo_Example.m` which plots the load-cell readings with respect to time.
+ The return variable `myLoadCellReading` is actually a 1x2 array: `[timestamp_of_reading, actual_reading]`. See the given example code in `servo_Example.m` which plots the load-cell readings with respect to time (in seconds).
 
 5. Close the serial connection with the Arduino by calling `closeServo()`

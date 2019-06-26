@@ -8,10 +8,9 @@
 clear all
 clc
 close all
-
 %% Parameters: Change this depending on the setup
-COM_PORT =      'COM12';
-MODEL =         'UNO'; 
+COM_PORT =      'COM8';
+MODEL =         'Mega2560'; 
 SERVO_PORT =    'D9';
 ENCODER_NAME =  'Encoder';  % BT module name for Arduino w/ encoder
 PPR =           600;        % Pulses per revolution
