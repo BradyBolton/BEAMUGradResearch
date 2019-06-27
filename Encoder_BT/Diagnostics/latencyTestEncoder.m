@@ -11,14 +11,11 @@ fscanf(bluetoothEncoder, '%f,%f,%f');
 initialTime = tic;
 timeSpan = 10;
  while toc(initialTime) < timeSpan
-     tic
      fwrite(bluetoothEncoder, test, 'uchar');
      reading(i,:) = fscanf(bluetoothEncoder, '%f,%f,%f', [1,3]);
      fprintf("Pos (Deg): %f\n", reading(i,1)/2400*-360);
-     roundTripLatencyTime(i) = toc;
      i = i + 1;
  end
-fprintf('Average round-time latency: %fs\n', mean(roundTripLatencyTime));
 plotGraphs;
 
 function plotGraphs
