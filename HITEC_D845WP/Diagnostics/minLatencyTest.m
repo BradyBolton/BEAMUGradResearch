@@ -3,20 +3,24 @@ clearSerials;
 initLoadCell;
 test = 2; % single byte
 i = 1;
-time = zeros([100, 1]);
-weight = zeros([100,2]);
+n = 500;
+time = zeros([n, 1]);
+weight = zeros([n,2]);
 fwrite(bluetoothLoadCell, test, 'uchar');
 fscanf(bluetoothLoadCell, '%f,%f');
- while i < 1000
+ while i < n
      tic
      fwrite(bluetoothLoadCell, test, 'uchar');
      weight(i,:) = fscanf(bluetoothLoadCell, '%f,%f', [1,2]);
+     fprintf("Load-cell reading: %f\n", weight(i,1));
+     plot(weight(1:i,2),weight(1:i,1).*-1);
+     drawnow
      time(i) = toc;
      i = i + 1;
  end
 fprintf('Average round-time latency: %fs\n', mean(time));
-xaxis = weight(:,2);
-plot(xaxis,weight);
+% xaxis = weight(:,2);
+% plot(weight(:,2),weight(:,1).*-1);
 
 function initLoadCell
     global bluetoothLoadCell;

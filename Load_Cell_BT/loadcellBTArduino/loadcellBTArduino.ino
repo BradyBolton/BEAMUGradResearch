@@ -5,8 +5,8 @@
                             // to prevent possible conflicts
 #include "HX711.h"
 
-#define BLUETOOTH_SPEED 115200    // Baud assumed by MATLAB 
-
+#define BLUETOOTH_SPEED 115200    // Baud assumed by MATLAB
+#define SCALE_FACTOR 11010.0f
 // HX711 circuit wiring & Setup
 const int LOADCELL_DOUT_PIN = 2;
 const int LOADCELL_SCK_PIN = 3;
@@ -27,9 +27,9 @@ void setup() {
 *  By omitting the gain factor parameter, the library
 *  default "128" (Channel A) is used here.
 */
-   
+
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  scale.set_scale(11010.f);                    // this value is obtained by calibrating the scale with known weights; see the README for details
+  scale.set_scale(SCALE_FACTOR);                    // this value is obtained by calibrating the scale with known weights; see the README for details
   scale.tare();                                // reset the scale to 0
 }
 

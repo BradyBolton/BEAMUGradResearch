@@ -18,8 +18,17 @@ edgeCount = 2400;
 a = arduino('COM3','Uno','Libraries','rotaryEncoder');%,'rotaryEncoder');
 rEncoder = rotaryEncoder(a,chA,chB,ppr);
 %rEncoder = rotaryEncoder(a,chA,chB,ppr);
-
-while true
-  [pos, vel] = getRotaryState();    % Get position and velocity
+n = 200;
+readings = zeros([n, 2]);
+count = 1;
+while count < n
+  [pos,vel] = getRotaryState();    % Get position and velocity
+  readings(count, 1) = pos;
+  readings(count, 2) = vel;
   fprintf('Pos: %6.2f, Rad/S: %6.2f.\n', pos, vel);
+  count = count + 1;
 end 
+xaxis = 1:n;
+% plot(xaxis, readings(:,1).*pi./180); % plot position
+% hold;
+plot(xaxis, readings(:,2)); % plot velocity

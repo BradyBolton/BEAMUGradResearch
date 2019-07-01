@@ -54,7 +54,7 @@ void loop() {
     while(mySerial.available()){
       mySerial.read();  
     }
-    mySerial.print((long)(enc_count % TOTAL_PULSES_PER_ROTATION)); 
+    mySerial.print((long)(enc_count)); // 0 - INF
     mySerial.print(",");
     mySerial.print(enc_count_period);
     mySerial.print(",");

@@ -66,9 +66,7 @@ while currentTime <= stopTime
     Theta_compare(count, 3) = readPosition(servo);
 
     % Read position and velocity of encoder
-    tic
     encoderReading = readEncoder(encoder);      % [pos, vel, time]
-    toc
     Encoder_Data(count, 1) = encoderReading(3);  % Time
     Encoder_Data(count, 2) = encoderReading(1);  % Position
 

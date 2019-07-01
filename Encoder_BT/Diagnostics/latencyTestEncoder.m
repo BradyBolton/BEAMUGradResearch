@@ -21,7 +21,7 @@ plotGraphs;
 function plotGraphs
     global reading;
     time = reading(:,3);
-    pos = reading(:,1)./-2400.*2.*pi;
+    pos = reading(:,1).*pi/180;
     dy = diff(pos);%./diff(time);
     dT = diff(time);
     omega = dy./dT;
@@ -40,3 +40,26 @@ function plotGraphs
     plot(sumDT,zeros(size(sumDT)));
     axis([0 10 -1.25 1.25])
 end
+
+% function plotGraphs
+%     global reading;
+%     time = reading(:,3);
+%     pos = reading(:,1)./-2400.*2.*pi;
+%     dy = diff(pos);%./diff(time);
+%     dT = diff(time);
+%     omega = dy./dT;
+%     sumDT = zeros(size(dT));
+%     runningSum = 0;
+%     for i = 1:size(dT)
+%         runningSum  = runningSum + 0.5 * dT(i);
+%         sumDT(i) = runningSum;
+%         runningSum  = runningSum + 0.5 * dT(i);
+%     end
+%     start = time(1);
+%     actualTime = time-start;
+%     plot(actualTime, pos);
+%     hold;
+%     plot(sumDT,omega);
+%     plot(sumDT,zeros(size(sumDT)));
+%     axis([0 10 -1.25 1.25])
+% end
