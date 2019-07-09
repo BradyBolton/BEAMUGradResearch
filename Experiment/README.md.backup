@@ -41,7 +41,7 @@
 
  The return variable `myLoadCellReading` is actually a 1x4 array: 
  	
- 	`[loadcell_reading_time, loadcell_reading, encoder_reading_time, encoder_reading]`
+ 	`[loadcell_reading_time, loadcell_reading, encoder_reading_time,encoder_reading]`
  
 	See the given example code in `servo_Example.m` which plots the load-cell readings with respect to time (in seconds).
 

@@ -15,9 +15,11 @@ global rEncoder;    % Encoder object
 %fprintf('I think we connected..\n');
 %a = arduino;
 edgeCount = 2400;
-a = arduino('COM3','Uno','Libraries','rotaryEncoder');%,'rotaryEncoder');
-rEncoder = rotaryEncoder(a,chA,chB,ppr);
-%rEncoder = rotaryEncoder(a,chA,chB,ppr);
+if exist('a', 'var') == 0 && exist('a', 'var') == 0
+   a = arduino('COM3','Uno','Libraries','rotaryEncoder');%,'rotaryEncoder');
+   rEncoder = rotaryEncoder(a,chA,chB,ppr);
+   %rEncoder = rotaryEncoder(a,chA,chB,ppr);
+end
 n = 200;
 readings = zeros([n, 2]);
 count = 1;
