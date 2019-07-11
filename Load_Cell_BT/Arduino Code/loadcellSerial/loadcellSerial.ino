@@ -10,8 +10,8 @@
 #include "HX711.h"
 
 // HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = 2;
-const int LOADCELL_SCK_PIN = 3;
+const int LOADCELL_DOUT_PIN = 4;
+const int LOADCELL_SCK_PIN = 5;
 
 HX711 scale;
 float scaleFactor;
@@ -53,7 +53,7 @@ void setup() {
 
 void loop() {
   Serial.print("Average of 10 readings:\t");
-  Serial.println(scale.get_units(10), 2);
+  Serial.println(scale.get_units(10), 3);
 
   while (Serial.available() > 0){
     float adjustment = Serial.parseFloat();

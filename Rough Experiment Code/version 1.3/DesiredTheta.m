@@ -2,7 +2,7 @@ function out = DesiredTheta(t)
 % parameters:
 
 global  Time a1 a2 a3 a4 a5 a6; %Time period for one cycle
-Time = 1.6; %Time period for one cycle
+Time = 1.8; %Time period for one cycle
 
 %Coefficients for three harmonics (Fourier approximation):
 a1 = 0.3; 
