@@ -1,0 +1,1 @@
+This code only works for sending both encoder and load-cell data, does not interface with servo

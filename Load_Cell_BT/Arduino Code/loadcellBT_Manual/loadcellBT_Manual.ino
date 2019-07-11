@@ -3,8 +3,8 @@
 #include "stdlib.h"
 
 #define BLUETOOTH_SPEED 115200    // Baud assumed by MATLAB 
-#define LOADCELL_DOUT_PIN 4
-#define LOADCELL_SCK_PIN 5
+#define LOADCELL_DOUT_PIN 2
+#define LOADCELL_SCK_PIN 3
 #define MESSAGE_SIZE 100
 
 HX711 scale;

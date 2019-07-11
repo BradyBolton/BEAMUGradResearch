@@ -36,7 +36,4 @@ void setup() {
 void loop() {
     Serial.println(scale.get_units(10), 1);       // 10 average readings from (ADC - Tare_Weight)/SCALE, prints float to BT HC05
     mySerial.println(scale.get_units(10), 1);     // 10 average readings from (ADC - Tare_Weight)/SCALE, prints float to BT HC05
-//  scale.power_down();                           // put the ADC in sleep mode
-//  delay(5000);
-//  scale.power_up();
 }

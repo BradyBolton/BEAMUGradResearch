@@ -1,0 +1,1 @@
+This can handle recieving different readings (encoder or load-cell or both), and is integrated with Dynamixel

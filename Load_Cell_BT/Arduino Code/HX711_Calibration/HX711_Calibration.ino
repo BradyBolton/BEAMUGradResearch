@@ -51,7 +51,7 @@ void setup() {
   Serial.println("Press - or z to decrease calibration factor");
 
   scale.set_scale();
-  scale.tare();	//Reset the scale to 0
+  scale.tare();  //Reset the scale to 0
 
   long zero_factor = scale.read_average(); //Get a baseline reading
   Serial.print("Zero factor: "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects.

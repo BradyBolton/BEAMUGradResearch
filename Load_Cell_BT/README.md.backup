@@ -39,4 +39,9 @@ A few things could go wrong with the module, some suggestions listed below are c
 
 ## Demo:
 
-See `loadcellBT_Example.m` for a demo. If using a different load-cell then change the configuration in `encoder_loadcell.ino` and the parameters of `initLoadCell.m`.
+See `loadcellBT_Exa.m` for a demo. If using a different encoder and/or load-cell you will want to
+change the configuration in `encoder_loadcell.ino` and the parameters of `initEncoder.m`, note the following:
+
+1. PPR (pulses per revolution): for the interrupt function, *since the interrupt will be triggered 4 x pulses per revolution, since 2 channels A/B are staggered w/ their own interrupt, from LOW/HIGH states (2 x 2 x PPR)*
+2. chA: Digital port for the A-channel of the quadrature, usually D2
+3. chB: Digital port for the B-channel of the quadrature, usually D3
