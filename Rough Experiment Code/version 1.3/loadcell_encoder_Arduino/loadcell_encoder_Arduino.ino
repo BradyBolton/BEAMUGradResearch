@@ -1,4 +1,3 @@
-#define BLUETOOTH_SPEED 115200    // Baud assumed by MATLAB 
 #define SERIAL_MONITOR_SPEED 115200
 
 // Encoder parameters
@@ -12,17 +11,15 @@
 
 // Libraries
 #include "HX711.h"
-#include <SoftwareSerial.h> // Prefer soft-serial over actual Tx-Rx
-                            // to prevent possible conflicts
 
 HX711 scale;
 volatile long long enc_count = 0;     // Global for ISR
 volatile long start;
 
 void setup() {
-  Serial.begin(BLUETOOTH_SPEED);
-  // Serial.begin(SERIAL_MONITOR_SPEED);     // Debugging on Serial Monitor via USB
+  Serial.begin(SERIAL_MONITOR_SPEED);
   enc_count = 0;                          // Reset static information
+  start = 0;
 
   pinMode(A_PIN, INPUT_PULLUP);
   pinMode(B_PIN, INPUT_PULLUP);
@@ -34,14 +31,6 @@ void setup() {
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   scale.set_scale(LOADCELL_SCALE);              
   scale.tare();                                // reset the scale to 0
-
-  while(!Serial.available()){
-    ;
-  }
-  char command;
-  if((command = Serial.read()) == 'r'){
-    start = millis();
-  }
 }
 
 /* Up to 2^64-1/2400 = 3.8430717e+15 number of rotations before over-flow, use long long
@@ -50,23 +39,13 @@ void setup() {
  */
 void loop() {
   if(Serial.available()){
+    Serial.read();
+    
     Serial.print((millis()-start)/1000.0);
-    switch(Serial.read()){
-      case 'e':
-        Serial.print(",");
-        Serial.println((long)(enc_count)); // 0 - INF
-        break;
-      case 'l':
-        Serial.print(",");
-        Serial.println(scale.get_units(1), 1);       // (ADC - Tare_Weight)/SCALE   
-        break;
-      case 'b':
-        Serial.print(",");
-        Serial.print((long)(enc_count)); // 0 - INF
-        Serial.print(",");
-        Serial.println(scale.get_units(1), 1);       // (ADC - Tare_Weight)/SCALE   
-        break;
-    }
+    Serial.print(",");
+    Serial.print((long)(enc_count)); // 0 - INF
+    Serial.print(",");
+    Serial.println(scale.get_units(1), 1);       // (ADC - Tare_Weight)/SCALE
   }
 }
 
