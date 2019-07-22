@@ -43,15 +43,6 @@ desiredVel = NaN(2*numberOfServos, defaultSize);
 %Setup dynamixel
 dyn = init();
 
-f1 = figure('Name','Encoder Raw Value');
-xlabel({'Time','(in seconds)'});
-ylabel({'Cumulative Position','(in radians)'});
-f2 = figure('Name','Load-cell Raw Value');
-xlabel({'Time','(in seconds)'});
-ylabel({'Weight','(in kg)'});
-movegui(f1,'east');
-movegui(f2,'west');
-
 receiveData();  % test connection
 
 %Loop variables
@@ -61,32 +52,35 @@ timer = tic;
 curTime = 0;
 j = 1;
 
+time = zeros([n, 1]);
+
 %% Update loop
 while curTime <= stop
     %Update timer
-    curTime = toc(timer);
-    
-    data(j,:) = receiveData();
-    figure(f1);
-    plot(data(1:j,1),data(1:j,2).*(2*pi)./2400);
-    xlabel({'Time','(in seconds)'});
-    ylabel({'Cumulative Position','(in radians)'});
-    drawnow;
-    figure(f2);
-    plot(data(1:j,1),data(1:j,3).*-1);
-    xlabel({'Time','(in seconds)'});
-    ylabel({'Weight','(in kg)'});
-    drawnow;
-    j = j + 1;
+    latency = tic;
     
     %Update array index
     timeIndex = timeIndex +1; %what is time index
+    
+%     data(timeIndex,:) = receiveData();
+%     
+    curTime = toc(timer);
+    
+    latency = tic;
     for i = ids
         %Update theoretical Data
-        [desiredPos(i * 2, timeIndex), desiredVel(i * 2, timeIndex), desiredPos(2*i -1, timeIndex), desiredVel(2*i -1, timeIndex)] = update(dyn, i, curTime,  amp, deltaT, timer);
+        [desiredPos(i * 2, timeIndex), ...
+         desiredVel(i * 2, timeIndex), ...
+         desiredPos(2*i -1, timeIndex), ...
+         desiredVel(2*i -1, timeIndex)] = update(dyn, i, curTime,  amp, deltaT, timer);
         % Real data gathering
-        [actualPos(i * 2, timeIndex), actualVel(i * 2, timeIndex), actualPos(2*i -1, timeIndex), actualVel(2*i -1, timeIndex)] = read(dyn, i, 'rad', 'rps', timer); % why 2*i -1
+        [actualPos(i * 2, timeIndex), ...
+         actualVel(i * 2, timeIndex), ...
+         actualPos(2*i -1, timeIndex), ...
+         actualVel(2*i -1, timeIndex)] = read(dyn, i, 'rad', 'rps', timer); % why 2*i -1
     end
+    time(timeIndex) = toc(latency);
+    
     
     %Update deltaT
     deltaT = toc(timer) - curTime;
@@ -127,6 +121,28 @@ for i = ids
     %Polyfiter(realTor(2*i-1:2*i, :), powerFit, t, sprintf('Actual Torque of servo %d', i), torFig);
 end
 
+%% Display Sensor Graphs
+
+f1 = figure('Name','Encoder Raw Value');
+xlabel({'Time','(in seconds)'});
+ylabel({'Cumulative Position','(in radians)'});
+f2 = figure('Name','Load-cell Raw Value');
+xlabel({'Time','(in seconds)'});
+ylabel({'Weight','(in kg)'});
+movegui(f1,'east');
+movegui(f2,'west');
+
+figure(f1);
+plot(data(1:(timeIndex-1),1),data(1:(timeIndex-1),2).*(2*pi)./2400);
+xlabel({'Time','(in seconds)'});
+ylabel({'Cumulative Position','(in radians)'});
+drawnow;
+figure(f2);
+plot(data(1:(timeIndex-1),1),data(1:(timeIndex-1),3).*-1);
+xlabel({'Time','(in seconds)'});
+ylabel({'Weight','(in kg)'});
+drawnow;
+
 %% Initialize Dynamixels
 function dyn = init()
 dyn = MyDynamixel();
@@ -142,12 +158,13 @@ end
 
 %% Update dyn goal position and velocity
 function [ang, vel, tAng, tVel] = update(dyn, id, t,  amp, deltaT, timer)
-ang = getAngle(t,  amp, deltaT);
+t = toc(timer);
+ang = getAngle(t,  amp);
 dyn.writeAngle('id',id,'rad', ang);
-tAng = toc(timer);
+tAng = t; % toc(timer);
 
 vel = getVelocity(t, amp, deltaT);
-dyn.writeSpeed(id,'RPS', vel);
+% dyn.writeSpeed(id,'RPS', vel);
 
 tVel = toc(timer);
 end
@@ -163,16 +180,8 @@ tVel = toc(timer);
 end
 
 %% Theoretical data
-function a = getAngle(t, amp, deltaT)
-
-global Time
-% float w
-% T = 0.8; %Time period for one cycle
-L = DesiredTheta(t);
-% Time = 0.8;
-% w = 2*pi/Time;
-
-a = amp * L ;
+function a = getAngle(t, amp)
+a = amp * DesiredTheta(t);
 end
 
 function v =  getVelocity(t, amp, deltaT)

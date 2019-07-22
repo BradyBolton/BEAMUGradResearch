@@ -139,8 +139,8 @@ dyn.portNum = 10; % COM10
 %dyn.portNum = 4; % COM4
 dyn.baudNum = 1; % baud = 1000000 bps
 dyn.init();
-% dyn.addDevice(1, '18A'); % ID = 1
-dyn.addDevice(1, '12A'); % ID = 2
+dyn.addDevice(1, '18A'); % ID = 1
+% dyn.addDevice(1, '12A'); % ID = 2
 %dyn.addDevice(1, '64A'); % ID = 3
 end
 
